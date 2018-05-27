@@ -1,5 +1,11 @@
 use core::Schijf;
 
+#[derive(Copy, Clone, PartialEq, Debug)]
+pub enum VeldKleur {
+    Wit,
+    Bruin
+}
+
 #[derive(Copy, Clone)]
 pub struct Veld {
     schijf: Option<Schijf>

@@ -13,7 +13,7 @@ impl SchijfKleur {
     }
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, PartialEq)]
 pub enum Schijf {
     Enkel(SchijfKleur),
     Dam(SchijfKleur),

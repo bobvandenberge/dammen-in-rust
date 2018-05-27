@@ -25,7 +25,7 @@ impl Spel {
 
     /// Maak een nieuw spel aan met de standaard regels
     pub fn met_standaard_regels() -> Spel {
-        Spel::new(Box::new(StandaardRegels))
+        Spel::new(Box::new(StandaardRegels::new()))
     }
 
     /// Haal het speeldveld, a.k.a. bord, op -> immutable
@@ -78,7 +78,7 @@ mod tests {
     pub struct GeenRegels;
 
     impl Engine for GeenRegels {
-        fn voer_zet_uit(&self, aan_de_beurt: &SchijfKleur, bord: &mut Bord, zet: &Zet) -> Result<ZetUitkomst, String> {
+        fn voer_zet_uit(&self, _: &SchijfKleur, _: &mut Bord, _: &Zet) -> Result<ZetUitkomst, String> {
             Ok(ZetUitkomst::BeurtWissel)
         }
     }
@@ -86,7 +86,7 @@ mod tests {
     pub struct AltijdFout;
 
     impl Engine for AltijdFout {
-        fn voer_zet_uit(&self, aan_de_beurt: &SchijfKleur, bord: &mut Bord, zet: &Zet) -> Result<ZetUitkomst, String> {
+        fn voer_zet_uit(&self, _: &SchijfKleur, _: &mut Bord, _: &Zet) -> Result<ZetUitkomst, String> {
             Err(String::from("Een reden"))
         }
     }
