@@ -12,10 +12,11 @@ Het bord wordt uitgetekend in je console. [   ] is een vlak. In een vlak kan een
 # Functionaliteiten
 * Spel starten
 * Een zet uitvoeren
+* Regel: je mag alleen maar zetten op vrije vlakken
+* Regel: je mag alleen je eigen stenen verplaatsen (oftewel alleen tijdens je eigen beurt)
 
 ## Todo
 * Regel: alleen zetten naar donkeren vlakken
-* Regel: je mag alleen maar zetten op vrije vlakken
 * Regel: je mag maar 1 vlak per keer verplaatsen
 * Regel: een Enkele schijf mag alleen vooruit zetten
 * Regel: je kan slaan
@@ -34,3 +35,4 @@ Het bord wordt uitgetekend in je console. [   ] is een vlak. In een vlak kan een
 * Support toevoegen voor grotere borden. Nu is alles 10x10 gesupport.
 * Regel onderdeel van de engine dynamischer opzetten zodat regels makkelijk toegevoegd/verwijderd of gedeeld kunnen worden tussen verschillende engines.
 * Verplaats COLUMN_BREEDTE const naar Spel
+* In testen algemeen: beter controleren of error melding ook de verwachte is.

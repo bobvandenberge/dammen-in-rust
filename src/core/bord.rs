@@ -54,14 +54,6 @@ impl Bord {
 
     /// Verplaats een schijf naar een ander veld
     pub fn verplaats(&mut self, bron: usize, doel: usize) -> Result<(), String> {
-        if self.get_veld(bron).unwrap().get_schijf().is_none() {
-            return Err(String::from("Op het begin veld staat geen schijf."));
-        }
-
-        if self.get_veld(doel).unwrap().get_schijf().is_some() {
-            return Err(String::from("Er staat al een schijf op het doel veld."));
-        }
-
         let schijf = {
             let mut veld = &mut self.velden[bron];
             veld.verwijder_schijf().unwrap()
@@ -77,25 +69,6 @@ impl Bord {
 #[cfg(test)]
 mod tests {
     use core::Bord;
-
-    #[test]
-    fn verplaatst_schijf_gaat_fout_als_bron_geen_schijf_bevat() {
-        let mut bord = Bord::new();
-
-        let result = bord.verplaats(41, 50);
-
-        assert!(result.is_err());
-    }
-
-    #[test]
-    fn verplaatst_schijf_gaat_fout_als_doel_schijf_bevat() {
-        let mut bord = Bord::new();
-
-        bord.verplaats(30, 41);
-        let result = bord.verplaats(32, 41);
-
-        assert!(result.is_err());
-    }
 
     #[test]
     fn verplaatst_schijf_verplaatst_schijf() {
