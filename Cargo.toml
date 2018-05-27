@@ -4,3 +4,4 @@ version = "0.1.0"
 authors = ["Bob van den Berge <bvandenberge@caple.eu>"]
 
 [dependencies]
+regex = "0.2"
