@@ -4,6 +4,15 @@ pub enum SchijfKleur {
     Zwart,
 }
 
+impl SchijfKleur {
+    pub fn tegenovergestelde(&self) -> SchijfKleur {
+        match self {
+            &SchijfKleur::Wit => SchijfKleur::Zwart,
+            &SchijfKleur::Zwart => SchijfKleur::Wit,
+        }
+    }
+}
+
 #[derive(Copy, Clone)]
 pub enum Schijf {
     Enkel(SchijfKleur),

@@ -6,8 +6,7 @@ use core::Schijf;
 /// Verschillende uitkomsten van een zet
 #[derive(Debug, PartialEq)]
 pub enum ZetUitkomst {
-    Winst,
-    Verlies,
+    Afgelopen,
     BeurtWissel,
     BeurtBlijftGelijk,
 }
@@ -45,9 +44,12 @@ impl Engine for StandaardRegels {
             return Err(format!("Het is niet de beurt van {:?}", schijf_kleur));
         }
 
-
-
         bord.verplaats(bron, doel);
+
+        // Regel
+        if bord.tel_stenen_voor_kleur(aan_de_beurt.tegenovergestelde()) == 0 {
+            return Ok(ZetUitkomst::Afgelopen);
+        }
 
         Ok(ZetUitkomst::BeurtWissel)
     }
@@ -61,6 +63,8 @@ mod tests {
     use core::Zet;
     use core::engine::Engine;
     use core::engine::ZetUitkomst;
+    use core::Veld;
+    use core::Schijf;
 
     #[test]
     fn voer_zet_uit_verplaatst_schijf() {
@@ -121,4 +125,6 @@ mod tests {
 
         assert!(result.is_err());
     }
+
+    // TODO: Test voegen voor einde spel
 }

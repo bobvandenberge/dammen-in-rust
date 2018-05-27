@@ -23,6 +23,22 @@ impl Bord {
         }
     }
 
+    pub fn tel_stenen_voor_kleur(&self, kleur: SchijfKleur) -> u32 {
+        let mut teller = 0;
+
+        for veld in self.velden.iter() {
+            if veld.get_schijf().is_some() {
+                match veld.get_schijf().unwrap() {
+                    Schijf::Enkel(_kleur) if _kleur == kleur => teller += 1,
+                    Schijf::Dam(_kleur) if _kleur == kleur => teller += 1,
+                    _ => ()
+                };
+            }
+        }
+
+        teller
+    }
+
     /// Maak een nieuw bord. Op een nieuw borden worden de stenen geplaatst
     /// op de juiste posities
     pub fn new() -> Bord {
@@ -53,6 +69,8 @@ impl Bord {
     }
 
     /// Verplaats een schijf naar een ander veld
+    /// Deze methode gaat ervan uit dat de stap geldig is. Controleer dit dus
+    /// van te voren!
     pub fn verplaats(&mut self, bron: usize, doel: usize) -> Result<(), String> {
         let schijf = {
             let mut veld = &mut self.velden[bron];
@@ -69,6 +87,7 @@ impl Bord {
 #[cfg(test)]
 mod tests {
     use core::Bord;
+    use core::SchijfKleur;
 
     #[test]
     fn verplaatst_schijf_verplaatst_schijf() {
@@ -78,5 +97,14 @@ mod tests {
 
         assert!(bord.get_veld(30).unwrap().get_schijf().is_none());
         assert!(bord.get_veld(41).unwrap().get_schijf().is_some());
+    }
+
+    #[test]
+    fn tel_stenen_voor_kleur() {
+        let mut bord = Bord::new();
+
+        let result = bord.tel_stenen_voor_kleur(SchijfKleur::Wit);
+
+        assert_eq!(result, 20);
     }
 }

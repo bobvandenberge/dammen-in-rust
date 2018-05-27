@@ -13,6 +13,8 @@ pub fn start_spel() {
 
         verkrijg_zet_en_voer_uit(&mut spel);
     }
+
+    println!("Spel is afgelopen! Gefelicteerd speler {:?}", spel.get_beurt());
 }
 
 fn verkrijg_zet_en_voer_uit(spel: &mut Spel) {

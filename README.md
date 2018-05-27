@@ -36,3 +36,6 @@ Het bord wordt uitgetekend in je console. [   ] is een vlak. In een vlak kan een
 * Regel onderdeel van de engine dynamischer opzetten zodat regels makkelijk toegevoegd/verwijderd of gedeeld kunnen worden tussen verschillende engines.
 * Verplaats COLUMN_BREEDTE const naar Spel
 * In testen algemeen: beter controleren of error melding ook de verwachte is.
+
+# For developers
+Het project heeft een aantal unit testen die de core functionaliteit testen. Deze testen zijn te runnen met het commando: `cargo test`.

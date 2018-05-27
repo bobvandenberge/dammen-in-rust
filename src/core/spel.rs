@@ -51,8 +51,7 @@ impl Spel {
 
         match resultaat {
             ZetUitkomst::BeurtWissel => self.wissel_beurt(),
-            ZetUitkomst::Verlies => self.is_afgelopen = true,
-            ZetUitkomst::Winst => self.is_afgelopen = true,
+            ZetUitkomst::Afgelopen => self.is_afgelopen = true,
             _ => ()
         }
 
