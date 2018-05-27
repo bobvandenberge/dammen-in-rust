@@ -7,11 +7,13 @@ Dit is een rust implementatie van het spel dammen. De spelregels worden gevolgd 
 Voer het volgende commando in de root directory uit om het spel te starten:
 ``cargo run``.
 
+Het bord wordt uitgetekend in je console. [   ] is een vlak. In een vlak kan een twee letterig code staan. De eerste letter van de code, Z of W, geeft de kleur aan; Zwart of Wit. De tweede letter, E of D, geeft aan of de schijf een Enkel of Dam is.
+
 # Functionaliteiten
 * Spel starten
+* Een zet uitvoeren
 
 ## Todo
-* Een zet uitvoeren
 * Regel: alleen zetten naar donkeren vlakken
 * Regel: je mag alleen maar zetten op vrije vlakken
 * Regel: je mag maar 1 vlak per keer verplaatsen
@@ -31,3 +33,4 @@ Voer het volgende commando in de root directory uit om het spel te starten:
 * String errors vervangen door errorcodes zodat consumer beter kan bepalen wat er moet gebeuren
 * Support toevoegen voor grotere borden. Nu is alles 10x10 gesupport.
 * Regel onderdeel van de engine dynamischer opzetten zodat regels makkelijk toegevoegd/verwijderd of gedeeld kunnen worden tussen verschillende engines.
+* Verplaats COLUMN_BREEDTE const naar Spel

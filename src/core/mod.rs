@@ -1,8 +1,8 @@
 mod spel;
-mod bord;
 mod veld;
 mod schijf;
 mod zet;
+pub mod bord;
 pub mod engine;
 
 pub use self::spel::Spel;

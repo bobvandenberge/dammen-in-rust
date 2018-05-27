@@ -22,7 +22,9 @@ pub struct StandaardRegels;
 
 impl Engine for StandaardRegels {
     fn voer_zet_uit(&self, aan_de_beurt: &SchijfKleur, bord: &mut Bord, zet: &Zet) -> Result<ZetUitkomst, String> {
-        let indexen = zet.converteer_naar_indexen()?;
+        let (bron, doel) = zet.converteer_naar_indexen()?;
+
+        bord.verplaats(bron, doel);
 
         Ok(ZetUitkomst::BeurtWissel)
     }

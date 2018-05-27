@@ -18,14 +18,14 @@ impl Zet {
 
     /// Converteer de zet naar numerice indexes. Retourneerd een Tuple
     /// waarin index 0 de begin_positie is en 1 de doel_positie
-    pub fn converteer_naar_indexen(&self) -> Result<(u32, u32), String> {
+    pub fn converteer_naar_indexen(&self) -> Result<(usize, usize), String> {
         Ok((
             self.converteer_naar_index(&self.begin_positie)?,
             self.converteer_naar_index(&self.doel_positie)?
         ))
     }
 
-    fn converteer_naar_index(&self, address: &String) -> Result<u32, String> {
+    fn converteer_naar_index(&self, address: &String) -> Result<usize, String> {
         let regex = Regex::new(r"^([A-Z])([1-9])$").unwrap();
 
         if !regex.is_match(address) {
@@ -47,7 +47,7 @@ impl Zet {
         let column = column.to_digit(alphanumeric_range).unwrap() - 9;
         let row = row.to_digit(COLUMN_BREEDTE).unwrap();
 
-        let index = (COLUMN_BREEDTE - row) * COLUMN_BREEDTE + (column - 1);
+        let index = ((COLUMN_BREEDTE - row) * COLUMN_BREEDTE + (column - 1)) as usize;
 
         Ok(index)
     }
