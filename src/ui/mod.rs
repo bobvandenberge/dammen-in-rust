@@ -1,41 +1,55 @@
-use super::core::{Spel, Schijf, SchijfKleur};
-use core::Bord;
-use core::bord::COLUMN_BREEDTE;
+mod printer;
 
-pub fn print_spel(spel: &Spel) {
-    clear_console();
+use std::io;
+use core::Spel;
+use core::Zet;
+use ui::printer::print_spel;
 
-    print_status(spel);
-    print_bord(spel.get_bord());
-}
+pub fn start_spel() {
+    let mut spel = Spel::met_standaard_regels();
 
-fn clear_console() {
-    print!("{}[2J", 27 as char);
-}
+    while !spel.is_afgelopen() {
+        print_spel(&spel);
 
-fn print_status(spel: &Spel) {
-    println!("Aan de beurt: {:?}", spel.get_beurt());
-    println!();
-}
-
-fn print_bord(bord: &Bord) {
-    for (index, veld) in bord.get_velden().iter().enumerate() {
-        if index % 10 == 0 {
-            print!("{:2}  ", COLUMN_BREEDTE - (index / 10) as u32);
-        }
-
-        match veld.get_schijf() {
-            &Some(Schijf::Enkel(SchijfKleur::Wit)) => print!("[ WE ]"),
-            &Some(Schijf::Enkel(SchijfKleur::Zwart)) => print!("[ ZE ]"),
-            &Some(Schijf::Dam(SchijfKleur::Wit)) => print!("[ WD ]"),
-            &Some(Schijf::Dam(SchijfKleur::Zwart)) => print!("[ ZD ]"),
-            &None => print!("[    ]")
-        }
-
-        if index % 10 == 9 {
-            println!();
-        }
+        verkrijg_zet_en_voer_uit(&mut spel);
     }
+}
 
-    println!("      A     B     C     D     E     F     G     H     I     J");
+fn verkrijg_zet_en_voer_uit(spel: &mut Spel) {
+    let zet = verkrijg_zet();
+
+    match spel.zet(&zet) {
+        Err(_error) => {
+            println!("{}", _error);
+            verkrijg_zet_en_voer_uit(spel);
+        },
+        _ => ()
+    }
+}
+
+fn verkrijg_zet() -> Zet {
+    Zet {
+        begin_positie: verkrijg_begin_positie(),
+        doel_positie: verkrijg_doel_positie()
+    }
+}
+
+fn verkrijg_begin_positie() -> String {
+    println!("Welke steen moet verplaatst worden?: ");
+    let mut begin_positie = String::new();
+
+    match io::stdin().read_line(&mut begin_positie) {
+        Ok(_) => begin_positie.trim().to_owned(),
+        Err(_) => verkrijg_begin_positie()
+    }
+}
+
+fn verkrijg_doel_positie() -> String {
+    println!("Waar moet deze steen heen?: ");
+    let mut doel_positie = String::new();
+
+    match io::stdin().read_line(&mut doel_positie) {
+        Ok(_) => doel_positie.trim().to_owned(),
+        Err(_) => verkrijg_doel_positie()
+    }
 }
