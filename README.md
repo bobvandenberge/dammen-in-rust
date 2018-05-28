@@ -19,6 +19,7 @@ Het bord wordt uitgetekend in je console. [   ] is een vlak. In een vlak kan een
 * Regel: je kan slaan
 * Regel: je moet slaan
 * Regel: Spel is afgelopen als alle stenen van 1 partij weg zijn (winst/verlies)
+* Regel: slaan verwijderd schijf
 
 ## Todo
 * Regel: een Enkele schijf mag alleen vooruit zetten

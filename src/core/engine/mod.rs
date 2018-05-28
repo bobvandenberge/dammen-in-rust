@@ -60,7 +60,8 @@ impl StandaardRegels {
                 Box::new(slaan_is_verplicht)
             ],
             na_verplaatsen: vec![
-                Box::new(geen_schijven_is_einde_spel)
+                Box::new(geen_schijven_is_einde_spel),
+                Box::new(slaan_verwijderd_de_geslagen_schijf)
             ],
         }
     }
@@ -219,5 +220,34 @@ mod tests {
         let result = (*engine).voer_zet_uit(&SchijfKleur::Wit, &mut bord, &zet);
 
         assert!(result.is_ok());
+    }
+
+    #[test]
+    fn voer_zet_uit_slaan_verwijderd_steen() {
+        let engine: Box<Engine> = Box::new(StandaardRegels::new());
+        let mut bord = Bord::new();
+        let zet = Zet {
+            begin_positie: String::from("B4"),
+            doel_positie: String::from("C5"),
+        };
+
+        (*engine).voer_zet_uit(&SchijfKleur::Wit, &mut bord, &zet);
+
+        let zet = Zet {
+            begin_positie: String::from("A7"),
+            doel_positie: String::from("B6"),
+        };
+
+        (*engine).voer_zet_uit(&SchijfKleur::Zwart, &mut bord, &zet);
+
+        let zet = Zet {
+            begin_positie: String::from("C5"),
+            doel_positie: String::from("A7"),
+        };
+
+        let result = (*engine).voer_zet_uit(&SchijfKleur::Wit, &mut bord, &zet);
+
+        assert!(result.is_ok());
+        assert!(bord.get_veld(41).unwrap().get_schijf().is_none());
     }
 }

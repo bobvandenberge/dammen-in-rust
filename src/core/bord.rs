@@ -83,6 +83,13 @@ impl Bord {
         veld.set_schijf(schijf);
     }
 
+    /// Verwijder een schijf uit het spel
+    /// Panics als het veld niet bestaat of als er geen schijf op ligt
+    pub fn verwijder_schijf(&mut self, index: usize) {
+        let mut veld = &mut self.velden[index];
+        veld.verwijder_schijf();
+    }
+
     /// Bepaal of een gegeven index een index is van een bruin of wit veld
     pub fn bepaald_kleur_veld(index: u32) -> VeldKleur {
         let rij_index = (index - (index % COLUMN_BREEDTE)) / COLUMN_BREEDTE;
@@ -127,10 +134,17 @@ mod tests {
 
     #[test]
     fn bepaald_kleur_veld() {
-        let bord = Bord::new();
-
         assert_eq!(Bord::bepaald_kleur_veld(0), VeldKleur::Wit, "Fout bij index 0");
         assert_eq!(Bord::bepaald_kleur_veld(23), VeldKleur::Bruin, "Fout bij index 23");
         assert_eq!(Bord::bepaald_kleur_veld(98), VeldKleur::Bruin, "Fout bij index 98");
+    }
+
+    #[test]
+    fn verwijder_schijf() {
+        let mut bord = Bord::new();
+
+        bord.verwijder_schijf(1);
+
+        assert!(bord.get_veld(1).unwrap().get_schijf().is_none());
     }
 }

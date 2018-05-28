@@ -3,7 +3,6 @@ use core::engine::ZetUitkomst;
 use core::Schijf;
 use core::SchijfKleur;
 use core::veld::VeldKleur;
-use core::Veld;
 use core::bord::COLUMN_BREEDTE;
 
 type VoorVerplaatsenRegelUitkomst = Result<(), String>;
@@ -45,7 +44,7 @@ pub fn eigen_beurt_eigen_kleur(aan_de_beurt: &SchijfKleur, bord: &mut Bord, (bro
 }
 
 /// Je mag alleen een bruin vlak als doel hebben
-pub fn alleen_bruine_vlakken_gebruiken(aan_de_beurt: &SchijfKleur, bord: &mut Bord, (_, doel): (usize, usize)) -> VoorVerplaatsenRegelUitkomst {
+pub fn alleen_bruine_vlakken_gebruiken(_: &SchijfKleur, _: &mut Bord, (_, doel): (usize, usize)) -> VoorVerplaatsenRegelUitkomst {
     if Bord::bepaald_kleur_veld(doel as u32) != VeldKleur::Bruin {
         return Err(String::from("Je mag alleen verplaatsen naar bruine vlakken"));
     }
@@ -80,7 +79,7 @@ pub fn slaan_is_verplicht(aan_de_beurt: &SchijfKleur, bord: &mut Bord, (bron, do
     }
     let slaan_mogelijkheden = kan_slaan(aan_de_beurt, bord);
 
-    if slaan_mogelijkheden.len() == 0 || slaan_mogelijkheden.contains(&doel) {
+    if slaan_mogelijkheden.len() == 0 || slaan_mogelijkheden.iter().filter(|optie| optie.eind_positie == doel).count() == 1 {
         return Ok(());
     }
 
@@ -96,15 +95,49 @@ pub fn geen_schijven_is_einde_spel(aan_de_beurt: &SchijfKleur, bord: &mut Bord, 
     None
 }
 
+/// Slaan verwijderd de geslagen schijf
+pub fn slaan_verwijderd_de_geslagen_schijf(aan_de_beurt: &SchijfKleur, bord: &mut Bord, (bron, _): (usize, usize)) -> NaVerplaatsenRegelUitkomst {
+    let slaan_mogelijkheden = kan_slaan(aan_de_beurt, bord);
+    let slag = slaan_mogelijkheden.iter()
+        .filter(|optie| optie.eind_positie == bron)
+        .nth(0);
+
+    if slag.is_none() {
+        return None;
+    }
+
+
+    let slag = slag.unwrap();
+
+    bord.verwijder_schijf(slag.geslagen_schijf_positie);
+
+    None
+}
+
 
 //////
 // Helper functies
 /////
 
+#[derive(PartialEq, Debug)]
+struct SlagOptie {
+    geslagen_schijf_positie: usize,
+    eind_positie: usize
+}
+
+impl SlagOptie {
+    pub fn new(geslagen_schijf_positie: u32, eind_positie: u32) -> SlagOptie {
+        SlagOptie {
+            geslagen_schijf_positie: geslagen_schijf_positie as usize,
+            eind_positie: eind_positie as usize
+        }
+    }
+}
+
 /// Kijk of de kleur die aan de beurt is een andere schijf kan slaan
 /// Returneerd de validate nieuwe posities
-fn kan_slaan(aan_de_beurt: &SchijfKleur, bord: &Bord) -> Vec<usize> {
-    let mut result: Vec<usize> = Vec::new();
+fn kan_slaan(aan_de_beurt: &SchijfKleur, bord: &Bord) -> Vec<SlagOptie> {
+    let mut result: Vec<SlagOptie> = Vec::new();
     for (index, veld) in bord.get_velden().iter().enumerate() {
         // continue als de schijf niet onze kleur is
         match veld.get_schijf() {
@@ -135,7 +168,10 @@ fn kan_slaan(aan_de_beurt: &SchijfKleur, bord: &Bord) -> Vec<usize> {
                 _ => continue
             }
 
-            result.push(veld_achter_te_slaan_veld_index as usize);
+            result.push(SlagOptie {
+                geslagen_schijf_positie: te_slaan_veld_index as usize,
+                eind_positie: veld_achter_te_slaan_veld_index as usize
+            });
         }
     }
 
@@ -171,6 +207,7 @@ mod tests {
     use core::Bord;
     use core::SchijfKleur;
     use core::engine::regels::kan_slaan;
+    use core::engine::regels::SlagOptie;
 
     #[test]
     fn kan_slaan_vooruit() {
@@ -178,7 +215,7 @@ mod tests {
 
         bord.verplaats(30, 52);
 
-        assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vec![43 as usize, 41 as usize]);
+        assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vec![SlagOptie::new(52, 43), SlagOptie::new(52, 41)]);
     }
 
     #[test]
@@ -187,7 +224,7 @@ mod tests {
 
         bord.verplaats(30, 52);
 
-        let vector: Vec<usize> = Vec::new();
+        let vector: Vec<SlagOptie> = Vec::new();
         assert_eq!(kan_slaan(&SchijfKleur::Zwart, &bord), vector);
     }
 
@@ -198,7 +235,7 @@ mod tests {
         bord.verplaats(30, 52);
         bord.verplaats(63, 41);
 
-        assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vec![63 as usize, 43 as usize]);
+        assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vec![SlagOptie::new(52, 63), SlagOptie::new(52, 43)]);
     }
 
     #[test]
@@ -208,7 +245,12 @@ mod tests {
         bord.verplaats(30, 52);
         bord.verplaats(32, 54);
 
-        assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vec![43 as usize, 41 as usize, 45 as usize, 43 as usize]);
+        assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vec![
+            SlagOptie::new(52, 43),
+            SlagOptie::new(52, 41),
+            SlagOptie::new(54, 45),
+            SlagOptie::new(54, 43)
+        ]);
     }
 
     #[test]
@@ -219,7 +261,7 @@ mod tests {
         bord.verplaats(32, 41);
         bord.verplaats(34, 43);
 
-        let vector: Vec<usize> = Vec::new();
+        let vector: Vec<SlagOptie> = Vec::new();
         assert_eq!(kan_slaan(&SchijfKleur::Wit, &bord), vector);
     }
 }
